@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_app/Views/google_pay_and_apple_pay_screen.dart';
-import 'package:flutter_app/Views/voice_to_text_screen.dart';
+import 'package:flutter_app/Views/extension_screen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -16,7 +15,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.red,
       ),
-      home: const PaySampleApp(),
+      home: const ExtensionScreen(),
     );
   }
 }
