@@ -38,6 +38,8 @@ dependencies:
   speech_to_text: any
   avatar_glow:
   pay: ^1.1.2
+  provider:
+  connectivity_plus:
 
 dev_dependencies:
   flutter_test:

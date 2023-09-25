@@ -62,7 +62,7 @@ class ExtensionScreen extends StatelessWidget {
               const SizedBox(height: 12),
               Text(
                 DateTime.now().toCustomTime(),
-                style: TextStyle(fontSize: 20),
+                style: const TextStyle(fontSize: 20),
               ).toCenter(),
               const Divider(color: Colors.red, thickness: 3),
             ],
