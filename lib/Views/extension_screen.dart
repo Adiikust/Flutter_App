@@ -45,6 +45,26 @@ class ExtensionScreen extends StatelessWidget {
                 style: const TextStyle(fontSize: 20),
               ),
               const Divider(color: Colors.red, thickness: 3),
+              const Text(
+                "Widget Center",
+                style: TextStyle(fontSize: 20),
+              ),
+              const SizedBox(height: 12),
+              const Text(
+                "Adnan",
+                style: TextStyle(fontSize: 20),
+              ).toCenter(),
+              const Divider(color: Colors.red, thickness: 3),
+              const Text(
+                "Time : 09:00",
+                style: TextStyle(fontSize: 20),
+              ),
+              const SizedBox(height: 12),
+              Text(
+                DateTime.now().toCustomTime(),
+                style: TextStyle(fontSize: 20),
+              ).toCenter(),
+              const Divider(color: Colors.red, thickness: 3),
             ],
           ),
         ));

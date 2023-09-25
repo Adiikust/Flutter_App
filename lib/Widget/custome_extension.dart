@@ -1,4 +1,6 @@
 //TODO:Data extension
+import 'package:flutter/cupertino.dart';
+
 extension CustomDate on DateTime {
   String toCustomDate() {
     return "$day/$month/$year";
@@ -85,4 +87,18 @@ extension IntegerToWords on int {
   }
 }
 
-//TODO:integer to string extension
+//TODO:iWidget Center
+extension WidgetCenter on Widget {
+  Center toCenter() {
+    return Center(
+      child: this,
+    );
+  }
+}
+
+//TODO:Time
+extension CustomTime on DateTime {
+  String toCustomTime() {
+    return "$hour : $minute : $second";
+  }
+}
