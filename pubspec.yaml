@@ -41,6 +41,11 @@ dependencies:
   provider:
   connectivity_plus:
   go_router: ^11.0.0
+  firebase_core: ^2.14.0
+  flutter_local_notifications: ^14.1.1
+  firebase_messaging: ^14.6.3
+  cloud_firestore: any
+  firebase_remote_config: ^4.2.6
 
 dev_dependencies:
   flutter_test:

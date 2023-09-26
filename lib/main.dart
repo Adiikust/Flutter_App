@@ -1,12 +1,12 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_app/Views/adaptive_screen.dart';
 import 'package:flutter_app/Views/register_all_provider.dart';
-import 'package:flutter_app/Views/welcome_screen.dart';
 import 'package:provider/provider.dart';
-
 import 'App_Route/app_route.dart';
 
-void main() {
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
   runApp(const MyApp());
 }
 
