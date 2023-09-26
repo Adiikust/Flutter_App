@@ -40,6 +40,7 @@ dependencies:
   pay: ^1.1.2
   provider:
   connectivity_plus:
+  go_router: ^11.0.0
 
 dev_dependencies:
   flutter_test:
