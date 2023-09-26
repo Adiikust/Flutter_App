@@ -1,9 +1,12 @@
+import 'package:firebase_remote_config/firebase_remote_config.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_app/Controller/Remote_Config/remote_confige_key.dart';
 import 'package:go_router/go_router.dart';
 
 class WelcomeScreen extends StatelessWidget {
   WelcomeScreen({Key? key}) : super(key: key);
-
+  final FirebaseRemoteConfig firebaseRemoteConfig =
+      FirebaseRemoteConfig.instance;
   List<String> route = [
     "/voiceTOTextScreen",
     "/networkConnectivityScreen",
@@ -24,7 +27,8 @@ class WelcomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("All Route"),
+        title: Text(firebaseRemoteConfig.getString(RemoteConfigKeys.appTitle) ??
+            "All Route"),
       ),
       body: ListView.builder(
         itemCount: routeName.length,
