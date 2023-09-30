@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_app/Views/adaptive_screen.dart';
-import 'package:flutter_app/Views/extension_screen.dart';
-import 'package:flutter_app/Views/google_pay_and_apple_pay_screen.dart';
-import 'package:flutter_app/Views/network_connectivity_screen.dart';
-import 'package:flutter_app/Views/voice_to_text_screen.dart';
-import 'package:flutter_app/Views/welcome_screen.dart';
+import 'package:flutter_app/Views/Auth/google_Sign_in_screen.dart';
+import 'package:flutter_app/Views/Chatting/home_screen.dart';
+import 'package:flutter_app/Views/Splash/splash.dart';
+import 'package:flutter_app/Views/Adaptive/adaptive_screen.dart';
+import 'package:flutter_app/Views/Extension/extension_screen.dart';
+import 'package:flutter_app/Views/Google_and_Apple_Pay/google_pay_and_apple_pay_screen.dart';
+import 'package:flutter_app/Views/Network/network_connectivity_screen.dart';
+import 'package:flutter_app/Views/Voice_To_Text/voice_to_text_screen.dart';
+import 'package:flutter_app/Views/Welcome/welcome_screen.dart';
 import 'package:go_router/go_router.dart';
 
 class AppRoute {
@@ -13,9 +16,21 @@ class AppRoute {
       GoRoute(
         path: '/',
         builder: (BuildContext context, GoRouterState state) {
-          return WelcomeScreen();
+          return const SplashScreen();
         },
         routes: <RouteBase>[
+          GoRoute(
+            path: 'googleSignInScreen',
+            builder: (BuildContext context, GoRouterState state) {
+              return const GoogleSignInScreen();
+            },
+          ),
+          GoRoute(
+            path: 'welcomeScreen',
+            builder: (BuildContext context, GoRouterState state) {
+              return WelcomeScreen();
+            },
+          ),
           GoRoute(
             path: 'voiceTOTextScreen',
             builder: (BuildContext context, GoRouterState state) {
@@ -44,6 +59,12 @@ class AppRoute {
             path: 'adaptiveScreen',
             builder: (BuildContext context, GoRouterState state) {
               return const AdaptiveScreen();
+            },
+          ),
+          GoRoute(
+            path: 'homeScreen',
+            builder: (BuildContext context, GoRouterState state) {
+              return const HomeScreen();
             },
           ),
         ],

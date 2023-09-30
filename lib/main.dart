@@ -3,7 +3,7 @@ import 'package:firebase_remote_config/firebase_remote_config.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_app/Controller/Remote_Config/remote_confige_key.dart';
 import 'package:flutter_app/Controller/Remote_Config/remote_configs_service_provider.dart';
-import 'package:flutter_app/Views/register_all_provider.dart';
+import 'package:flutter_app/Views/All_Provider/register_all_provider.dart';
 import 'package:provider/provider.dart';
 import 'App_Route/app_route.dart';
 
