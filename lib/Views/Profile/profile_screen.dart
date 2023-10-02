@@ -1,15 +1,11 @@
 import 'dart:developer';
 import 'dart:io';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_app/Helper/dialoges.dart';
 import 'package:flutter_app/Model/chat_user_model.dart';
+import 'package:flutter_app/Services/services.dart';
 import 'package:flutter_app/Widget/custome_sizebox.dart';
-import 'package:google_sign_in/google_sign_in.dart';
 import 'package:image_picker/image_picker.dart';
-
-import '../../Services/services.dart';
 
 class ProfileScreen extends StatefulWidget {
   final ChatUser user;
@@ -79,7 +75,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
                     TextFormField(
                       initialValue: widget.user.name,
-                      // onSaved: (val) => APIs.me.name = val ?? '',
+                      onSaved: (val) => ServicesApi.mYProfile.name = val ?? '',
                       validator: (val) => val != null && val.isNotEmpty
                           ? null
                           : 'Required Field',
@@ -96,7 +92,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
                     TextFormField(
                       initialValue: widget.user.about,
-                      // onSaved: (val) => APIs.me.about = val ?? '',
+                      onSaved: (val) => ServicesApi.mYProfile.about = val ?? '',
                       validator: (val) => val != null && val.isNotEmpty
                           ? null
                           : 'Required Field',
@@ -119,10 +115,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       onPressed: () {
                         if (_formKey.currentState!.validate()) {
                           _formKey.currentState!.save();
-                          // APIs.updateUserInfo().then((value) {
-                          //   Dialogs.showSnackbar(
-                          //       context, 'Profile Updated Successfully!');
-                          // });
+                          ServicesApi.updateUserInfo().then((value) {
+                            Dialogs.showSnackbar(
+                                context, 'Profile Updated Successfully!');
+                          });
                         }
                       },
                       icon: const Icon(Icons.edit, size: 28),

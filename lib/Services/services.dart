@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_app/Model/chat_user_model.dart';
@@ -5,9 +7,14 @@ import 'package:flutter_app/Model/chat_user_model.dart';
 class ServicesApi {
   //TODO: authentication
   static FirebaseAuth auth = FirebaseAuth.instance;
+
   //TODO: get authentication uid
   static User get user => auth.currentUser!;
-//TODO: get fireStore uid
+
+  //TODO: store user profile data
+  static late final ChatUser mYProfile;
+
+  //TODO: get fireStore uid
   static FirebaseFirestore firestore = FirebaseFirestore.instance;
 
   // for accessing firebase storage
@@ -38,7 +45,7 @@ class ServicesApi {
         .set(chatUser.toJson());
   }
 
-//TODO: Profile Data
+  //TODO: Profile Data
   static ChatUser profile = ChatUser(
       id: user.uid,
       name: user.displayName.toString(),
@@ -49,4 +56,32 @@ class ServicesApi {
       isOnline: false,
       lastActive: '',
       pushToken: '');
+
+  //TODO: get current user data
+  static Future<void> getSelfInfo() async {
+    await firestore.collection('users').doc(user.uid).get().then((user) async {
+      if (user.exists) {
+        mYProfile = ChatUser.fromJson(user.data()!);
+        log('My Data: ${user.data()}');
+      } else {
+        await createUser().then((value) => getSelfInfo());
+      }
+    });
+  }
+
+  //TODO: get all user
+  static Stream<QuerySnapshot<Map<String, dynamic>>> getAllUser() {
+    return firestore
+        .collection('users')
+        .where('id', isNotEqualTo: user.uid)
+        .snapshots();
+  }
+
+  //TODO: User update Profile
+  static Future<void> updateUserInfo() async {
+    await firestore.collection('users').doc(user.uid).update({
+      'name': mYProfile.name,
+      'about': mYProfile.about,
+    });
+  }
 }
