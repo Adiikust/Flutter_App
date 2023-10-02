@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app/Model/chat_user_model.dart';
+import 'package:flutter_app/Views/Chatting/chat_screen.dart';
 
 class ChatUserCard extends StatefulWidget {
   final ChatUser user;
@@ -14,11 +15,15 @@ class _ChatUserCardState extends State<ChatUserCard> {
   Widget build(BuildContext context) {
     return Card(
         margin: const EdgeInsets.symmetric(horizontal: 7, vertical: 4),
-        // color: Colors.blue.shade100,
         elevation: 2,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
         child: InkWell(
-          onTap: () {},
+          onTap: () {
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (_) => ChatScreen(user: widget.user)));
+          },
           child: ListTile(
             leading: InkWell(
               onTap: () {},

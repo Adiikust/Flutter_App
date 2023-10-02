@@ -1,15 +1,11 @@
 import 'dart:developer';
 import 'dart:io';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_app/Helper/dialoges.dart';
 import 'package:flutter_app/Model/chat_user_model.dart';
+import 'package:flutter_app/Services/services.dart';
 import 'package:flutter_app/Widget/custome_sizebox.dart';
-import 'package:google_sign_in/google_sign_in.dart';
 import 'package:image_picker/image_picker.dart';
-
-import '../../Services/services.dart';
 
 class ProfileScreen extends StatefulWidget {
   final ChatUser user;
@@ -79,7 +75,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
                     TextFormField(
                       initialValue: widget.user.name,
-                      // onSaved: (val) => APIs.me.name = val ?? '',
+                      onSaved: (val) => ServicesApi.mYProfile.name = val ?? '',
                       validator: (val) => val != null && val.isNotEmpty
                           ? null
                           : 'Required Field',
@@ -96,7 +92,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
                     TextFormField(
                       initialValue: widget.user.about,
-                      // onSaved: (val) => APIs.me.about = val ?? '',
+                      onSaved: (val) => ServicesApi.mYProfile.about = val ?? '',
                       validator: (val) => val != null && val.isNotEmpty
                           ? null
                           : 'Required Field',
@@ -119,10 +115,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       onPressed: () {
                         if (_formKey.currentState!.validate()) {
                           _formKey.currentState!.save();
-                          // APIs.updateUserInfo().then((value) {
-                          //   Dialogs.showSnackbar(
-                          //       context, 'Profile Updated Successfully!');
-                          // });
+                          ServicesApi.updateUserInfo().then((value) {
+                            Dialogs.showSnackbar(
+                                context, 'Profile Updated Successfully!');
+                          });
                         }
                       },
                       icon: const Icon(Icons.edit, size: 28),
@@ -137,7 +133,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
-  // bottom sheet for picking a profile picture for user
+  //TODO: bottom sheet for picking a profile picture for user
   void _showBottomSheet() {
     showModalBottomSheet(
         context: context,
@@ -149,17 +145,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
             shrinkWrap: true,
             padding: const EdgeInsets.only(top: 10, bottom: 10),
             children: [
-              //pick profile picture label
               const Text('Pick Profile Picture',
                   textAlign: TextAlign.center,
                   style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500)),
-
               const CustomSizedBox(height: 20),
-
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  //pick from gallery button
+                  //TODO:pick from gallery button
                   ElevatedButton(
                       style: ElevatedButton.styleFrom(
                           //backgroundColor: Colors.white,
@@ -177,14 +170,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             _image = image.path;
                           });
 
-                          // APIs.updateProfilePicture(File(_image!));
-                          // // for hiding bottom sheet
-                          // Navigator.pop(context);
+                          ServicesApi.updateProfilePicture(File(_image!));
+                          Navigator.pop(context);
                         }
                       },
                       child: const Icon(Icons.image)),
 
-                  //take picture from camera button
+                  //TODO:take picture from camera button
                   ElevatedButton(
                       style: ElevatedButton.styleFrom(
                           // backgroundColor: Colors.white,
@@ -202,9 +194,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             _image = image.path;
                           });
 
-                          // APIs.updateProfilePicture(File(_image!));
-                          // // for hiding bottom sheet
-                          // Navigator.pop(context);
+                          ServicesApi.updateProfilePicture(File(_image!));
+                          Navigator.pop(context);
                         }
                       },
                       child: const Icon(Icons.camera_alt_rounded)),
