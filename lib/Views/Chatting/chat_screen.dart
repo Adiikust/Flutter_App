@@ -1,5 +1,11 @@
+import 'dart:convert';
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_app/Model/chat_user_model.dart';
+import 'package:flutter_app/Model/message_model.dart';
+import 'package:flutter_app/Services/services.dart';
+import 'package:flutter_app/Widget/message_card.dart';
 
 class ChatScreen extends StatefulWidget {
   final ChatUser user;
@@ -12,6 +18,8 @@ class ChatScreen extends StatefulWidget {
 final _textController = TextEditingController();
 
 class _ChatScreenState extends State<ChatScreen> {
+  List<Message> list = [];
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -24,23 +32,46 @@ class _ChatScreenState extends State<ChatScreen> {
           children: [
             Expanded(
               child: StreamBuilder(
+                stream: ServicesApi.getAllMessages(),
                 builder: (context, snapshot) {
                   switch (snapshot.connectionState) {
                     case ConnectionState.waiting:
                     case ConnectionState.none:
-                    //return const SizedBox();
+                      return const Center(child: CircularProgressIndicator());
                     case ConnectionState.active:
                     case ConnectionState.done:
-                      final _list = [];
+                      // final list = ["adii", "khan"];
+                      final data = snapshot.data?.docs;
+                      log("{Data :${jsonEncode(data![0].data())} }");
+                      list.clear();
 
-                      if (_list.isNotEmpty) {
+                      list.add(Message(
+                          toID: "xyz",
+                          msg: "hello",
+                          read: "",
+                          type: Type.text,
+                          send: "02:30 PM",
+                          fromID: ServicesApi.user.uid));
+                      list.add(Message(
+                          toID: ServicesApi.user.uid,
+                          msg: "G hello",
+                          read: "",
+                          type: Type.text,
+                          send: "02:32 PM",
+                          fromID: "xyz"));
+
+                      // list = data?.map((e) => ChatUser.fromJson(e.data())).toList() ?? [];
+
+                      if (list.isNotEmpty) {
                         return ListView.builder(
-                            reverse: true,
-                            itemCount: _list.length,
+                            // reverse: true,
+                            itemCount: list.length,
                             padding: const EdgeInsets.only(top: 10),
                             physics: const BouncingScrollPhysics(),
                             itemBuilder: (context, index) {
-                              return const Text("data");
+                              return MessageCard(
+                                message: list[index],
+                              );
                             });
                       } else {
                         return const Center(

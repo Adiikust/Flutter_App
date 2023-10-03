@@ -102,4 +102,9 @@ class ServicesApi {
         .doc(user.uid)
         .update({'image': mYProfile.image});
   }
+
+  //TODO: Get All Messages
+  static Stream<QuerySnapshot<Map<String, dynamic>>> getAllMessages() {
+    return firestore.collection('Message').snapshots();
+  }
 }
