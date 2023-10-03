@@ -70,12 +70,9 @@ class _ChatScreenState extends State<ChatScreen> {
                 icon: const Icon(Icons.arrow_back, color: Colors.black54)),
 
             //user profile picture
-            ClipRRect(
-                borderRadius: BorderRadius.circular(100),
-                child: Image.network(
-                  widget.user.image,
-                  height: 50,
-                )),
+            CircleAvatar(
+              backgroundImage: NetworkImage(widget.user.image),
+            ),
 
             //for adding some space
             const SizedBox(width: 10),
