@@ -13,16 +13,8 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  List<ChatUser> searchList = [];
   List<ChatUser> list = [];
   bool _isSearching = false;
-
-  @override
-  void initState() {
-    ServicesApi.getSelfInfo();
-    super.initState();
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -34,17 +26,20 @@ class _HomeScreenState extends State<HomeScreen> {
                     border: InputBorder.none, hintText: 'Name, Email, ...'),
                 autofocus: true,
                 style: const TextStyle(fontSize: 17, letterSpacing: 0.5),
+                //when search text changes then updated search list
                 onChanged: (val) {
-                  searchList.clear();
-                  for (var i in searchList) {
-                    if (i.name.toLowerCase().contains(val.toLowerCase()) ||
-                        i.email.toLowerCase().contains(val.toLowerCase())) {
-                      searchList.add(i);
-                      setState(() {
-                        searchList;
-                      });
-                    }
-                  }
+                  //search logic
+                  // _searchList.clear();
+
+                  // for (var i in _list) {
+                  //   if (i.name.toLowerCase().contains(val.toLowerCase()) ||
+                  //       i.email.toLowerCase().contains(val.toLowerCase())) {
+                  //     _searchList.add(i);
+                  //     setState(() {
+                  //       _searchList;
+                  //     });
+                  //   }
+                  // }
                 },
               )
             : const Text('We Chat'),
@@ -66,13 +61,13 @@ class _HomeScreenState extends State<HomeScreen> {
                     context,
                     MaterialPageRoute(
                         builder: (_) =>
-                            ProfileScreen(user: ServicesApi.mYProfile)));
+                            ProfileScreen(user: ServicesApi.profile)));
               },
               icon: const Icon(Icons.more_vert))
         ],
       ),
       body: StreamBuilder(
-        stream: ServicesApi.getAllUser(),
+        stream: ServicesApi.firestore.collection('users').snapshots(),
         builder: (context, snapshot) {
           switch (snapshot.connectionState) {
             case ConnectionState.waiting:
@@ -87,10 +82,11 @@ class _HomeScreenState extends State<HomeScreen> {
                 return ListView.builder(
                   physics: const BouncingScrollPhysics(),
                   padding: const EdgeInsets.only(top: 5),
-                  itemCount: _isSearching ? searchList.length : list.length,
+                  itemCount: list.length,
                   itemBuilder: (context, index) {
                     return ChatUserCard(
-                        user: _isSearching ? searchList[index] : list[index]);
+                      user: list[index],
+                    );
                   },
                 );
               } else {
