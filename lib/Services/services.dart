@@ -5,6 +5,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter_app/Model/chat_user_model.dart';
 
+import '../Model/message_model.dart';
+
 class ServicesApi {
   //TODO: authentication
   static FirebaseAuth auth = FirebaseAuth.instance;
@@ -103,8 +105,53 @@ class ServicesApi {
         .update({'image': mYProfile.image});
   }
 
+  //TODO: useful for getting conversation id
+  static String getConversationID(String id) => user.uid.hashCode <= id.hashCode
+      ? '${user.uid}_$id'
+      : '${id}_${user.uid}';
+
   //TODO: Get All Messages
-  static Stream<QuerySnapshot<Map<String, dynamic>>> getAllMessages() {
-    return firestore.collection('Message').snapshots();
+  static Stream<QuerySnapshot<Map<String, dynamic>>> getAllMessages(
+      ChatUser user) {
+    return firestore
+        .collection('chats/${getConversationID(user.id)}/messages/')
+        .snapshots();
+  }
+
+  //TODO: Send Message
+  static Future<void> sendMessage(
+      ChatUser chatUser, String msg, Type text) async {
+    print("Send msg 2");
+    final time = DateTime.now().millisecondsSinceEpoch.toString();
+    final Message message = Message(
+      toID: chatUser.id,
+      msg: msg,
+      read: '',
+      type: Type.text,
+      fromID: user.uid,
+      send: time,
+    );
+    final ref = firestore
+        .collection('chats/${getConversationID(chatUser.id)}/messages/');
+    await ref.doc(time).set(message.toJson());
+    print("Send msg 2");
+  }
+
+  //TODO: update read status of message
+  static Future<void> updateMessageReadStatus(Message message) async {
+    firestore
+        .collection('chats/${getConversationID(message.fromID)}/messages/')
+        .doc(message.send)
+        .update({'read': DateTime.now().millisecondsSinceEpoch.toString()});
+  }
+
+  //TODO: get only last message of a specific chat
+  static Stream<QuerySnapshot<Map<String, dynamic>>> getLastMessage(
+      ChatUser user) {
+    return firestore
+        .collection('chats/${getConversationID(user.id)}/messages/')
+        .orderBy('send', descending: true)
+        .limit(1)
+        .snapshots();
   }
 }

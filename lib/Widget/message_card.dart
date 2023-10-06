@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_app/Helper/my_date.dart';
 import 'package:flutter_app/Model/message_model.dart';
 import 'package:flutter_app/Services/services.dart';
 
@@ -19,13 +20,16 @@ class _MessageCardState extends State<MessageCard> {
 
   // sender or another user message
   Widget _blueMessage() {
+    if (widget.message.read.isEmpty) {
+      ServicesApi.updateMessageReadStatus(widget.message);
+    }
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Flexible(
           child: Container(
             padding:
-                EdgeInsets.all(widget.message.type == Type.image ? 30 : 20),
+                EdgeInsets.all(widget.message.type == Type.image ? 10 : 10),
             margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
             decoration: BoxDecoration(
                 color: const Color.fromARGB(255, 221, 245, 255),
@@ -47,9 +51,8 @@ class _MessageCardState extends State<MessageCard> {
         Padding(
           padding: const EdgeInsets.only(right: 10),
           child: Text(
-            widget.message.send,
-            // MyDateUtil.getFormattedTime(
-            //     context: context, time: widget.message.sent),
+            MyDateUtil.getFormattedTime(
+                context: context, time: widget.message.send),
             style: const TextStyle(fontSize: 13, color: Colors.black54),
           ),
         ),
@@ -65,12 +68,14 @@ class _MessageCardState extends State<MessageCard> {
         Row(
           children: [
             const SizedBox(width: 10),
-            const Icon(Icons.done_all_rounded, color: Colors.blue, size: 20),
+            widget.message.read.isNotEmpty
+                ? const Icon(Icons.done_all_rounded,
+                    color: Colors.blue, size: 20)
+                : const Icon(Icons.done, color: Colors.grey, size: 20),
             const SizedBox(width: 2),
             Text(
-              widget.message.send,
-              // MyDateUtil.getFormattedTime(
-              //     context: context, time: widget.message.sent),
+              MyDateUtil.getFormattedTime(
+                  context: context, time: widget.message.send),
               style: const TextStyle(fontSize: 13, color: Colors.black54),
             ),
           ],
@@ -80,7 +85,7 @@ class _MessageCardState extends State<MessageCard> {
         Flexible(
           child: Container(
             padding:
-                EdgeInsets.all(widget.message.type == Type.image ? 30 : 20),
+                EdgeInsets.all(widget.message.type == Type.image ? 10 : 10),
             margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
             decoration: BoxDecoration(
                 color: const Color.fromARGB(255, 218, 255, 176),

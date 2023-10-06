@@ -61,7 +61,6 @@ class _HomeScreenState extends State<HomeScreen> {
               icon: Icon(_isSearching
                   ? CupertinoIcons.clear_circled_solid
                   : Icons.search)),
-
           IconButton(
               onPressed: () {
                 Navigator.push(

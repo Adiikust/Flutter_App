@@ -28,7 +28,7 @@ class Message {
     data['toID'] = toID;
     data['msg'] = msg;
     data['read'] = read;
-    data['type'] = type;
+    data['type'] = type.name;
     data['send'] = send;
     data['fromID'] = fromID;
     return data;

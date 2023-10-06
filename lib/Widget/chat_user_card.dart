@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_app/Helper/my_date.dart';
 import 'package:flutter_app/Model/chat_user_model.dart';
+import 'package:flutter_app/Model/message_model.dart';
+import 'package:flutter_app/Services/services.dart';
 import 'package:flutter_app/Views/Chatting/chat_screen.dart';
 
 class ChatUserCard extends StatefulWidget {
@@ -11,6 +14,7 @@ class ChatUserCard extends StatefulWidget {
 }
 
 class _ChatUserCardState extends State<ChatUserCard> {
+  Message? _message;
   @override
   Widget build(BuildContext context) {
     return Card(
@@ -24,33 +28,44 @@ class _ChatUserCardState extends State<ChatUserCard> {
                 MaterialPageRoute(
                     builder: (_) => ChatScreen(user: widget.user)));
           },
-          child: ListTile(
-            leading: InkWell(
-              onTap: () {},
-              child: CircleAvatar(
-                backgroundImage: NetworkImage(widget.user.image),
-              ),
-            ),
-
-            //user name
-            title: Text(widget.user.name),
-
-            //last message
-            subtitle: Text(widget.user.about),
-
-            //last message time
-            trailing: Container(
-              width: 15,
-              height: 15,
-              decoration: BoxDecoration(
-                  color: Colors.red.shade400,
-                  borderRadius: BorderRadius.circular(10)),
-            ),
-            // trailing: const Text(
-            //   "03.00 PM",
-            //   style: TextStyle(color: Colors.black54),
-            // ),
-          ),
+          child: StreamBuilder(
+              stream: ServicesApi.getLastMessage(widget.user),
+              builder: (context, snapshot) {
+                final data = snapshot.data?.docs;
+                final list =
+                    data?.map((e) => Message.fromJson(e.data())).toList() ?? [];
+                if (list.isNotEmpty) _message = list[0];
+                return ListTile(
+                  leading: InkWell(
+                      onTap: () {},
+                      child: CircleAvatar(
+                          backgroundImage: NetworkImage(widget.user.image))),
+                  title: Text(widget.user.name),
+                  subtitle: Text(
+                      _message != null
+                          ? _message!.type == Type.image
+                              ? 'image'
+                              : _message!.msg
+                          : widget.user.about,
+                      maxLines: 1),
+                  trailing: _message == null
+                      ? null
+                      : _message!.read.isEmpty &&
+                              _message!.fromID != ServicesApi.user.uid
+                          ? Container(
+                              width: 15,
+                              height: 15,
+                              decoration: BoxDecoration(
+                                  color: Colors.greenAccent.shade400,
+                                  borderRadius: BorderRadius.circular(10)),
+                            )
+                          : Text(
+                              MyDateUtil.getLastMessageTime(
+                                  context: context, time: _message!.send),
+                              style: const TextStyle(color: Colors.black54),
+                            ),
+                );
+              }),
         ));
   }
 }
