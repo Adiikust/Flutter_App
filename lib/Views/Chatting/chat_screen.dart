@@ -8,6 +8,7 @@ import 'package:flutter_app/Model/chat_user_model.dart';
 import 'package:flutter_app/Model/message_model.dart';
 import 'package:flutter_app/Services/services.dart';
 import 'package:flutter_app/Widget/message_card.dart';
+import 'package:image_picker/image_picker.dart';
 
 class ChatScreen extends StatefulWidget {
   final ChatUser user;
@@ -25,7 +26,12 @@ class _ChatScreenState extends State<ChatScreen> {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () => FocusScope.of(context).unfocus(),
+      onTap: () {
+        FocusScope.of(context).unfocus();
+        if (_showEmoji) {
+          setState(() => _showEmoji = !_showEmoji);
+        }
+      },
       child: SafeArea(
         child: WillPopScope(
           onWillPop: () {
@@ -63,7 +69,7 @@ class _ChatScreenState extends State<ChatScreen> {
 
                           if (list.isNotEmpty) {
                             return ListView.builder(
-                                // reverse: true,
+                                reverse: true,
                                 itemCount: list.length,
                                 padding: const EdgeInsets.only(top: 10),
                                 physics: const BouncingScrollPhysics(),
@@ -82,10 +88,17 @@ class _ChatScreenState extends State<ChatScreen> {
                     },
                   ),
                 ),
+                if (_isUploading)
+                  const Align(
+                      alignment: Alignment.centerRight,
+                      child: Padding(
+                          padding:
+                              EdgeInsets.symmetric(vertical: 8, horizontal: 20),
+                          child: CircularProgressIndicator(strokeWidth: 2))),
                 _chatInput(),
                 if (_showEmoji)
                   SizedBox(
-                    height: 35,
+                    height: 300,
                     child: EmojiPicker(
                       textEditingController: _textController,
                       config: Config(
@@ -169,18 +182,43 @@ class _ChatScreenState extends State<ChatScreen> {
                     controller: _textController,
                     keyboardType: TextInputType.multiline,
                     maxLines: null,
-                    onTap: () {},
+                    onTap: () {
+                      if (_showEmoji) setState(() => _showEmoji = !_showEmoji);
+                    },
                     decoration: const InputDecoration(
                         hintText: 'Type Something...',
                         hintStyle: TextStyle(color: Colors.blueAccent),
                         border: InputBorder.none),
                   )),
                   IconButton(
-                      onPressed: () async {},
+                      onPressed: () async {
+                        final ImagePicker picker = ImagePicker();
+                        final List<XFile> images =
+                            await picker.pickMultiImage(imageQuality: 70);
+                        for (var i in images) {
+                          log('Image Path: ${i.path}');
+                          setState(() => _isUploading = true);
+                          await ServicesApi.sendChatImage(
+                              widget.user, File(i.path));
+                          setState(() => _isUploading = false);
+                        }
+                      },
                       icon: const Icon(Icons.image,
                           color: Colors.blueAccent, size: 26)),
                   IconButton(
-                      onPressed: () async {},
+                      onPressed: () async {
+                        final ImagePicker picker = ImagePicker();
+                        final XFile? image = await picker.pickImage(
+                            source: ImageSource.camera, imageQuality: 70);
+                        if (image != null) {
+                          log('Image Path: ${image.path}');
+                          setState(() => _isUploading = true);
+
+                          await ServicesApi.sendChatImage(
+                              widget.user, File(image.path));
+                          setState(() => _isUploading = false);
+                        }
+                      },
                       icon: const Icon(Icons.camera_alt_rounded,
                           color: Colors.blueAccent, size: 26)),
                   const SizedBox(width: 10),

@@ -115,19 +115,20 @@ class ServicesApi {
       ChatUser user) {
     return firestore
         .collection('chats/${getConversationID(user.id)}/messages/')
+        .orderBy('send', descending: true)
         .snapshots();
   }
 
   //TODO: Send Message
   static Future<void> sendMessage(
-      ChatUser chatUser, String msg, Type text) async {
+      ChatUser chatUser, String msg, Type type) async {
     print("Send msg 2");
     final time = DateTime.now().millisecondsSinceEpoch.toString();
     final Message message = Message(
       toID: chatUser.id,
       msg: msg,
       read: '',
-      type: Type.text,
+      type: type,
       fromID: user.uid,
       send: time,
     );
@@ -153,5 +154,19 @@ class ServicesApi {
         .orderBy('send', descending: true)
         .limit(1)
         .snapshots();
+  }
+
+  //TODO: send chat image
+  static Future<void> sendChatImage(ChatUser chatUser, File file) async {
+    final ext = file.path.split('.').last;
+    final ref = storage.ref().child(
+        'images/${getConversationID(chatUser.id)}/${DateTime.now().millisecondsSinceEpoch}.$ext');
+    await ref
+        .putFile(file, SettableMetadata(contentType: 'image/$ext'))
+        .then((p0) {
+      log('Data Transferred: ${p0.bytesTransferred / 1000} kb');
+    });
+    final imageUrl = await ref.getDownloadURL();
+    await sendMessage(chatUser, imageUrl, Type.image);
   }
 }
