@@ -1,9 +1,9 @@
 import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
-
 import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_app/Helper/my_date.dart';
 import 'package:flutter_app/Model/chat_user_model.dart';
 import 'package:flutter_app/Model/message_model.dart';
 import 'package:flutter_app/Services/services.dart';
@@ -118,44 +118,64 @@ class _ChatScreenState extends State<ChatScreen> {
 
   Widget _appBar() {
     return InkWell(
-        onTap: () {},
-        child: Row(
-          children: [
-            //back button
-            IconButton(
-                onPressed: () => Navigator.pop(context),
-                icon: const Icon(Icons.arrow_back, color: Colors.black54)),
+      onTap: () {},
+      child: StreamBuilder(
+        stream: ServicesApi.getUserInfo(widget.user),
+        builder: (context, snapshot) {
+          final data = snapshot.data?.docs;
+          final list =
+              data?.map((e) => ChatUser.fromJson(e.data())).toList() ?? [];
+          return Row(
+            children: [
+              //back button
+              IconButton(
+                  onPressed: () => Navigator.pop(context),
+                  icon: const Icon(Icons.arrow_back, color: Colors.black54)),
 
-            //user profile picture
-            CircleAvatar(
-              backgroundImage: NetworkImage(widget.user.image),
-            ),
+              //user profile picture
+              CircleAvatar(
+                backgroundImage: NetworkImage(
+                    list.isNotEmpty ? list[0].image : widget.user.image),
+              ),
 
-            //for adding some space
-            const SizedBox(width: 10),
+              //for adding some space
+              const SizedBox(width: 10),
 
-            //user name & last seen time
-            Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                //user name
-                Text(widget.user.name,
-                    style: const TextStyle(
-                        fontSize: 16,
-                        color: Colors.black87,
-                        fontWeight: FontWeight.w500)),
+              //user name & last seen time
+              Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  //user name
+                  Text(list.isNotEmpty ? list[0].name : widget.user.name,
+                      style: const TextStyle(
+                          fontSize: 16,
+                          color: Colors.black87,
+                          fontWeight: FontWeight.w500)),
 
-                //for adding some space
-                const SizedBox(height: 2),
+                  //for adding some space
+                  const SizedBox(height: 2),
 
-                //last seen time of user
-                const Text("Last Active",
-                    style: TextStyle(fontSize: 13, color: Colors.black54)),
-              ],
-            )
-          ],
-        ));
+                  //last seen time of user
+                  Text(
+                      list.isNotEmpty
+                          ? list[0].isOnline
+                              ? 'Online'
+                              : MyDateUtil.getLastActiveTime(
+                                  context: context,
+                                  lastActive: list[0].lastActive)
+                          : MyDateUtil.getLastActiveTime(
+                              context: context,
+                              lastActive: widget.user.lastActive),
+                      style:
+                          const TextStyle(fontSize: 13, color: Colors.black54)),
+                ],
+              )
+            ],
+          );
+        },
+      ),
+    );
   }
 
   Widget _chatInput() {

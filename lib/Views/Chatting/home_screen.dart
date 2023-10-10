@@ -1,5 +1,8 @@
+import 'dart:developer';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_app/Model/chat_user_model.dart';
 import 'package:flutter_app/Services/services.dart';
 import 'package:flutter_app/Views/Profile/profile_screen.dart';
@@ -22,6 +25,19 @@ class _HomeScreenState extends State<HomeScreen> {
     // TODO: implement initState
     ServicesApi.getSelfInfo();
     super.initState();
+    SystemChannels.lifecycle.setMessageHandler((message) {
+      log('Message: $message');
+
+      if (ServicesApi.auth.currentUser != null) {
+        if (message.toString().contains('resume')) {
+          ServicesApi.updateActiveStatus(true);
+        }
+        if (message.toString().contains('pause')) {
+          ServicesApi.updateActiveStatus(false);
+        }
+      }
+      return Future.value(message);
+    });
   }
 
   @override
